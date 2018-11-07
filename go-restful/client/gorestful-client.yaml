@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gorestful-client
+spec:
+  selector:
+    matchLabels:
+      app: gorestful-client
+  template:
+    metadata:
+      labels:
+        app: gorestful-client
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: worker1
+                operator: In
+                values:
+                - "true"
+      containers:
+        - name: gorestful-client
+          image: perf-test/go-restful-client:latest
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: PORT
+            value: "8501"
+          - name: SAMPLE_FOLDER
+            value: "/root"
+          - name: TARGET
+            value: http://gorestful-server:9001
+          ports:
+            - containerPort: 8501
+
+---
+apiVersion: v1
+kind: Service
+apiVersion: v1
+metadata:
+  name: gorestful-client
+spec:
+  selector:
+    app: gorestful-client
+  ports:
+  - protocol: TCP
+    name: http
+    port: 8501
+    nodePort: 8501
+  type: NodePort
