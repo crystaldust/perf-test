@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: client-chassis
+  name: gochassis-client
 spec:
   selector:
     matchLabels:
-      app: client-chassis
+      app: gochassis-client
   template:
     metadata:
       labels:
-        app: client-chassis
+        app: gochassis-client
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -23,25 +23,31 @@ spec:
                 values:
                 - "true"
       containers:
-        - name: client-chassis
-          image: xiaoliang/client-chassis:latest
+        - name: gochassis-client
+          image: perf-test/go-chassis-client:latest
           imagePullPolicy: IfNotPresent
+          env:
+          - name: PORT
+            value: "8502"
+          - name: SAMPLE_FOLDER
+            value: "/root"
+          - name: TARGET
+            value: http://gochassis-server:9002
           ports:
-            - containerPort: 9000
+            - containerPort: 8502
 
 ---
 apiVersion: v1
 kind: Service
 apiVersion: v1
 metadata:
-  name: client-chassis
+  name: gochassis-client
 spec:
   selector:
-    app: client-chassis
+    app: gochassis-client
   ports:
   - protocol: TCP
     name: http
-    port: 9000
-    nodePort: 9000
+    port: 8502
+    nodePort: 8502
   type: NodePort
-  externalIPs: ['192.168.43.80']

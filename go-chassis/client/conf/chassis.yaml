@@ -3,5 +3,5 @@
 cse:
   service:
     registry:
-      address: http://127.0.0.1:30100
-      # address: http://service-center.servicecomb:30100
+      # address: http://127.0.0.1:30100
+      address: http://service-center.servicecomb:30100

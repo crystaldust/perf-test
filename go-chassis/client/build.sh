@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-
-sudo docker build -t xiaoliang/client-chassis .
+cp ../../testdata/* ./
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o client .
+sudo docker build -t perf-test/go-chassis-client ./
+rm sample.*

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -52,7 +53,12 @@ func main() {
 		doImageRequest(w)
 	})
 
-	http.ListenAndServe(":8002", mux)
+	port := "8002"
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+	listenAddr := ":" + port
+	log.Fatal(http.ListenAndServe(listenAddr, mux))
 }
 
 func doJsonRequest(writer http.ResponseWriter) {
