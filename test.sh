@@ -6,20 +6,20 @@ function test() {
 	wrk -t20 -c40 -d10s http://$addr/$path
 }
 
-sleep 30
-test localhost:8000 json
-sleep 30
-test localhost:8000 image
-echo
+function batch() {
+	for i in {1..3}
+	do
+		sleep 30
+		test $1 $2
+	done
+}
 
-sleep 30
-test localhost:8001 json
-sleep 30
-test localhost:8001 image
-echo
 
-sleep 30
-test localhost:8002 json
-sleep 30
-test localhost:8002 image
-echo
+batch localhost:8000 json
+batch localhost:8000 image
+
+batch localhost:8001 json
+batch localhost:8001 image
+
+batch localhost:8002 json
+batch localhost:8002 image

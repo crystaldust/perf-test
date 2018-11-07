@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/crystaldust/perf-test/util"
 )
 
 var targetUrl string
@@ -56,7 +58,8 @@ func sendReq(w http.ResponseWriter, r *http.Request, reader io.Reader) {
 		return
 	}
 
-	client := http.Client{}
+	client := util.GetChassisHttpClient()
+	// client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
