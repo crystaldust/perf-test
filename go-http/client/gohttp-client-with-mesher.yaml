@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gohttp-client
+spec:
+  selector:
+    matchLabels:
+      app: gohttp-client
+  template:
+    metadata:
+      labels:
+        app: gohttp-client
+      annotations:
+        sidecar.mesher.io/inject: "yes"
+        sidecar.mesher.io/discoveryType: "sc"
+        sidecar.istio.io/inject: "false"
+
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: worker1
+                operator: In
+                values:
+                - "true"
+      containers:
+        - name: gohttp-client
+          image: perf-test/go-http-client:latest
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: PORT
+            value: "8500"
+          - name: SAMPLE_FOLDER
+            value: "/root"
+          - name: TARGET
+            value: http://gohttp-server:9000
+          ports:
+            - containerPort: 8500
+
+---
+apiVersion: v1
+kind: Service
+apiVersion: v1
+metadata:
+  name: gohttp-client
+spec:
+  selector:
+    app: gohttp-client
+  ports:
+  - protocol: TCP
+    name: http
+    port: 8500
+    nodePort: 8500
+  type: NodePort
