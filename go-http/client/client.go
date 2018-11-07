@@ -35,7 +35,12 @@ func main() {
 	mux.HandleFunc("/json", sendJson)
 	mux.HandleFunc("/image", sendImage)
 
-	log.Fatal(http.ListenAndServe(":8000", mux))
+	port := "8000"
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+	listenAddr := ":" + port
+	log.Fatal(http.ListenAndServe(listenAddr, mux))
 }
 
 func sendJson(w http.ResponseWriter, r *http.Request) {
