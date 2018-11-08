@@ -54,7 +54,4 @@ spec:
     name: http
     port: 8500
     nodePort: 8500
-  - protocol: TCP
-    name: http-mesher
-    port: 30101
   type: NodePort

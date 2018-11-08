@@ -17,6 +17,8 @@ var jsonBytes []byte
 var imageBytes []byte
 
 func main() {
+	fmt.Printf("http_proxy: %s\n", os.Getenv("http_proxy"))
+
 	targetUrl = os.Getenv("TARGET")
 	if targetUrl == "" {
 		targetUrl = "http://localhost:9000"

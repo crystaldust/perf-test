@@ -6,9 +6,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
+	fmt.Printf("http_proxy: %s\n", os.Getenv("http_proxy"))
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		n, err := io.Copy(ioutil.Discard, r.Body)
