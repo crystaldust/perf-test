@@ -14,7 +14,6 @@ spec:
         sidecar.mesher.io/inject: "yes"
         sidecar.mesher.io/discoveryType: "sc"
         sidecar.istio.io/inject: "false"
-
     spec:
       affinity:
         nodeAffinity:
@@ -36,6 +35,8 @@ spec:
             value: "/root"
           - name: TARGET
             value: http://gohttp-server:9000
+          - name: http_proxy
+            value: http://127.0.0.1:30101/
           ports:
             - containerPort: 8500
 
@@ -53,4 +54,7 @@ spec:
     name: http
     port: 8500
     nodePort: 8500
+  - protocol: TCP
+    name: http-mesher
+    port: 30101
   type: NodePort
