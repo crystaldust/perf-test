@@ -7,6 +7,7 @@ import (
 )
 
 var tp http.RoundTripper = &http.Transport{
+	Proxy:               http.ProxyFromEnvironment,
 	MaxIdleConns:        50,
 	MaxIdleConnsPerHost: 50,
 	DialContext: (&net.Dialer{

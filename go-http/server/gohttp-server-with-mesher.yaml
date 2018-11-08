@@ -48,7 +48,4 @@ spec:
     name: http
     port: 9000
     nodePort: 9000
-  - protocol: TCP
-    name: http-mesher
-    port: 30301
   type: NodePort
