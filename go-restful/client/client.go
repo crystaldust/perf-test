@@ -6,10 +6,10 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
-
-	"github.com/crystaldust/perf-test/util"
+	"time"
 )
 
 var targetUrl string
@@ -65,7 +65,7 @@ func sendReq(w http.ResponseWriter, r *http.Request, reader io.Reader) {
 		return
 	}
 
-	client := util.GetChassisHttpClient()
+	client := GetHttpClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -87,4 +87,20 @@ func sendReq(w http.ResponseWriter, r *http.Request, reader io.Reader) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(bs)
+}
+
+var tp http.RoundTripper = &http.Transport{
+	Proxy:               http.ProxyFromEnvironment,
+	MaxIdleConns:        100,
+	MaxIdleConnsPerHost: 100,
+	DialContext: (&net.Dialer{
+		KeepAlive: 60 * time.Second,
+		Timeout:   60 * time.Second,
+	}).DialContext,
+}
+
+func GetHttpClient() *http.Client {
+	return &http.Client{
+		Transport: tp,
+	}
 }
